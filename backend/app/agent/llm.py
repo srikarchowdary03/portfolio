@@ -33,7 +33,9 @@ class OpenAILLM:
         response = self._client.chat.completions.create(
             model=self._model,
             messages=[{"role": "system", "content": system}, *messages],
-            temperature=0.2,
+            # Slightly loose for generation so prose doesn't read templated;
+            # the groundedness gate catches factual drift. JSON calls stay 0.0.
+            temperature=0.45,
             max_tokens=max_tokens,
         )
         return (response.choices[0].message.content or "").strip()

@@ -58,7 +58,7 @@ uv run uvicorn app.main:app --reload --port 8000
 cd frontend
 npm install
 npm run dev
-# → http://localhost:3000
+# → http://localhost:3000  (chat UI at /chat; talks to the backend on :8000)
 ```
 
 Or the backend via Docker: `docker compose up --build`.
@@ -96,7 +96,7 @@ groundedness), `done`.
 - [x] **Phase 0** — Monorepo scaffold, architecture docs, CI, Docker
 - [x] **Phase 1** — Knowledge base content + ingestion pipeline (chunk → embed → index) + `/api/search`
 - [x] **Phase 2** — LangGraph RAG agent + streaming `/api/chat` with citations
-- [ ] **Phase 3** — Chat UI: streaming, citation chips, feedback
+- [x] **Phase 3** — Chat UI: streaming, citation chips, source panel, feedback
 - [ ] **Phase 4** — Portfolio site: design system, hero, projects, resume
 - [ ] **Phase 5** — Evaluation harness: golden dataset, hit-rate/MRR, LLM-judge faithfulness
 - [ ] **Phase 6** — Production: Railway + Vercel deploy, rate limiting, monitoring

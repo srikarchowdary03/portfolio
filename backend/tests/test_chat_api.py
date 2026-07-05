@@ -41,6 +41,7 @@ def test_chat_streams_tokens_sources_meta_done() -> None:
 
     meta = next(data for name, data in events if name == "meta")
     assert meta["grounded"] is True and meta["retrieved"] > 0
+    assert isinstance(meta["turn_id"], int)
 
 
 def test_session_memory_accumulates_across_turns() -> None:
@@ -63,6 +64,22 @@ def test_chat_validation_rejects_bad_input() -> None:
     assert no_message.status_code == 422
     assert short_session.status_code == 422
     assert too_long.status_code == 422
+
+
+def test_feedback_roundtrip() -> None:
+    with TestClient(app) as client:
+        chat = client.post(
+            "/api/chat", json={"session_id": "feedback-sess-1", "message": "His skills?"}
+        )
+        turn_id = next(
+            data for name, data in parse_sse(chat.text) if name == "meta"
+        )["turn_id"]
+
+        ok = client.post("/api/feedback", json={"turn_id": turn_id, "rating": "up"})
+        bad_rating = client.post("/api/feedback", json={"turn_id": turn_id, "rating": "meh"})
+
+    assert ok.status_code == 204
+    assert bad_rating.status_code == 422
 
 
 def test_suggestions_endpoint() -> None:

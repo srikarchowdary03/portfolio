@@ -25,7 +25,14 @@ CREATE TABLE IF NOT EXISTS chat_turns (
     used_count INTEGER NOT NULL,
     chunk_ids TEXT NOT NULL,
     latency_ms INTEGER NOT NULL
-)
+);
+CREATE TABLE IF NOT EXISTS feedback (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ts REAL NOT NULL,
+    turn_id INTEGER NOT NULL,
+    rating TEXT NOT NULL,
+    comment TEXT
+);
 """
 
 
@@ -35,7 +42,7 @@ class ChatLog:
         try:
             db_path.parent.mkdir(parents=True, exist_ok=True)
             with self._connect() as conn:
-                conn.execute(_SCHEMA)
+                conn.executescript(_SCHEMA)
         except (sqlite3.Error, OSError):
             logger.exception("Chat log unavailable; continuing without persistence")
 
@@ -55,10 +62,11 @@ class ChatLog:
         used_count: int,
         chunk_sources: list[str],
         latency_ms: int,
-    ) -> None:
+    ) -> int | None:
+        """Insert the turn and return its row id (None if logging failed)."""
         try:
             with self._connect() as conn:
-                conn.execute(
+                cursor = conn.execute(
                     "INSERT INTO chat_turns (ts, session_id, question, answer, intent, grounded,"
                     " retrieved_count, used_count, chunk_ids, latency_ms)"
                     " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -75,5 +83,17 @@ class ChatLog:
                         latency_ms,
                     ),
                 )
+                return cursor.lastrowid
         except (sqlite3.Error, OSError):
             logger.exception("Failed to log chat turn")
+            return None
+
+    def log_feedback(self, turn_id: int, rating: str, comment: str | None) -> None:
+        try:
+            with self._connect() as conn:
+                conn.execute(
+                    "INSERT INTO feedback (ts, turn_id, rating, comment) VALUES (?, ?, ?, ?)",
+                    (time.time(), turn_id, rating, comment),
+                )
+        except (sqlite3.Error, OSError):
+            logger.exception("Failed to log feedback")

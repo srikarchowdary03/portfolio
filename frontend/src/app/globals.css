@@ -1,26 +1,56 @@
 @import "tailwindcss";
 
+/* Interim design tokens — the full design system lands in Phase 4.
+   Dark "premium AI product" theme per docs/architecture direction. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #070b14;
+  --surface: #0e1526;
+  --surface-2: #141d33;
+  --border: #232f4b;
+  --foreground: #e6eaf2;
+  --muted: #8a94a7;
+  --accent: #7c5cff;
+  --accent-soft: #2a2450;
+  --cyan: #22d3ee;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border-soft: var(--border);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-cyan: var(--cyan);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* Markdown content inside chat bubbles */
+.chat-markdown p {
+  margin: 0 0 0.75em;
+}
+.chat-markdown p:last-child {
+  margin-bottom: 0;
+}
+.chat-markdown ul,
+.chat-markdown ol {
+  margin: 0 0 0.75em;
+  padding-left: 1.25em;
+  list-style: disc;
+}
+.chat-markdown li {
+  margin-bottom: 0.35em;
+}
+.chat-markdown strong {
+  color: var(--foreground);
+  font-weight: 600;
 }

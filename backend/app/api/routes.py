@@ -47,6 +47,12 @@ class ChatRequest(BaseModel):
     message: str = Field(min_length=1, max_length=2000)
 
 
+class FeedbackRequest(BaseModel):
+    turn_id: int = Field(ge=1)
+    rating: str = Field(pattern="^(up|down)$")
+    comment: str | None = Field(default=None, max_length=500)
+
+
 def _sse(event: str, payload: dict) -> str:
     return f"event: {event}\ndata: {json.dumps(payload)}\n\n"
 
@@ -92,6 +98,12 @@ def chat_suggestions() -> dict:
     return {"suggestions": SUGGESTED_QUESTIONS}
 
 
+@router.post("/feedback", status_code=204)
+def feedback(request: Request, body: FeedbackRequest) -> None:
+    """Thumbs up/down on an answer, keyed by the turn_id from the meta event."""
+    request.app.state.chatlog.log_feedback(body.turn_id, body.rating, body.comment)
+
+
 @router.post("/chat")
 async def chat(request: Request, body: ChatRequest) -> StreamingResponse:
     """The AI Recruiter Assistant.
@@ -121,7 +133,7 @@ async def chat(request: Request, body: ChatRequest) -> StreamingResponse:
         latency_ms = round((time.perf_counter() - started) * 1000)
         sessions.append(body.session_id, "user", body.message)
         sessions.append(body.session_id, "assistant", result.answer)
-        chatlog.log_turn(
+        turn_id = chatlog.log_turn(
             session_id=body.session_id,
             question=body.message,
             answer=result.answer,
@@ -141,6 +153,7 @@ async def chat(request: Request, body: ChatRequest) -> StreamingResponse:
         yield _sse(
             "meta",
             {
+                "turn_id": turn_id,
                 "latency_ms": latency_ms,
                 "intent": result.intent,
                 "grounded": result.grounded,
