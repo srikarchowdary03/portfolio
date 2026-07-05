@@ -63,11 +63,39 @@ npm run dev
 
 Or the backend via Docker: `docker compose up --build`.
 
+### Talking to the real AI (OpenAI key)
+
+The backend runs fully **without** a key using deterministic fake providers
+(`EMBEDDINGS_PROVIDER=fake`, `LLM_PROVIDER=fake`) — that's how the test suite
+runs. For real semantic search and real answers, edit `backend/.env`:
+
+```bash
+EMBEDDINGS_PROVIDER=openai
+LLM_PROVIDER=openai
+OPENAI_API_KEY=sk-...   # set a monthly spend cap in the OpenAI dashboard first
+```
+
+Then start the server and try it (ingestion of the whole KB costs < $0.01):
+
+```bash
+uv run uvicorn app.main:app --reload --port 8000
+
+curl -N -X POST http://localhost:8000/api/chat \
+  -H 'Content-Type: application/json' \
+  -d '{"session_id":"local-test-0001","message":"What LLM experience does he have?"}'
+
+curl "http://localhost:8000/api/search?q=kafka+experience&k=3"
+```
+
+The chat response streams SSE events: `token` (answer text), `sources`
+(citations with document metadata), `meta` (latency, retrieval stats,
+groundedness), `done`.
+
 ## Project status / roadmap
 
 - [x] **Phase 0** — Monorepo scaffold, architecture docs, CI, Docker
 - [x] **Phase 1** — Knowledge base content + ingestion pipeline (chunk → embed → index) + `/api/search`
-- [ ] **Phase 2** — LangGraph RAG agent + streaming `/api/chat` with citations
+- [x] **Phase 2** — LangGraph RAG agent + streaming `/api/chat` with citations
 - [ ] **Phase 3** — Chat UI: streaming, citation chips, feedback
 - [ ] **Phase 4** — Portfolio site: design system, hero, projects, resume
 - [ ] **Phase 5** — Evaluation harness: golden dataset, hit-rate/MRR, LLM-judge faithfulness

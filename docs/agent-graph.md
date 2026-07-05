@@ -62,3 +62,23 @@ class AgentState(TypedDict):
 Session memory is per-`session_id` message history (TTL ~30 min, in-process —
 right-sized for a single-instance deployment; Redis is the documented upgrade
 when horizontal scaling ever matters).
+
+## Verify-then-stream
+
+Groundedness checking conflicts with live token streaming: once a token is on
+the wire, it can't be unsaid. The agent therefore runs to completion —
+including the groundedness gate and any retry — *before* the first SSE token
+is emitted; the verified answer is then re-chunked and streamed for typing-
+effect UX. Cost: ~1–2s of time-to-first-token with gpt-4o-mini. Benefit: a
+hard guarantee that no unverified claim ever reaches a recruiter's screen.
+For a trust-critical, short-answer use case, that trade is clearly right; a
+long-form assistant might choose live streaming with post-hoc correction
+instead.
+
+## Provider boundary
+
+Like the embedder (`rag/embedder.py`), the LLM sits behind a small interface
+(`agent/llm.py`): `OpenAILLM` (gpt-4o-mini, JSON mode for structured calls) in
+production, `FakeLLM` for tests and keyless development — scripted responses
+for exact node-level unit tests, or rule-based heuristics good enough to run
+the entire graph end-to-end with zero API spend.

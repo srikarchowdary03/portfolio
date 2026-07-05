@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     # "openai" in production; "fake" runs the full pipeline deterministically
     # without API calls (tests, keyless local dev).
     embeddings_provider: str = "openai"
+    llm_provider: str = "openai"
+    chat_model: str = "gpt-4o-mini"
+    # Local writable state (SQLite chat log). Gitignored; Docker uses /app/data.
+    data_dir: str = "data"
     # Path to the knowledge base. Local default assumes the repo layout
     # (backend/ next to content/); Docker sets CONTENT_DIR=/app/content.
     content_dir: str = "../content"
@@ -34,6 +38,10 @@ class Settings(BaseSettings):
     @property
     def content_path(self) -> Path:
         return Path(self.content_dir).resolve()
+
+    @property
+    def chatlog_path(self) -> Path:
+        return Path(self.data_dir).resolve() / "chatlog.db"
 
 
 @lru_cache

@@ -15,15 +15,18 @@ RUN uv sync --frozen --no-dev
 FROM python:3.11-slim
 
 # Run as a non-root user — a container escape shouldn't hand out root.
-RUN useradd --create-home appuser
-USER appuser
+RUN useradd --create-home appuser \
+    && mkdir -p /app/data \
+    && chown appuser /app/data
 
 WORKDIR /app
 COPY --from=builder /app/.venv /app/.venv
 COPY backend/app ./app
 COPY content ./content
+USER appuser
 ENV PATH="/app/.venv/bin:$PATH" \
-    CONTENT_DIR=/app/content
+    CONTENT_DIR=/app/content \
+    DATA_DIR=/app/data
 
 EXPOSE 8000
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

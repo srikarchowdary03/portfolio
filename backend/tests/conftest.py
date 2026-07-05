@@ -6,7 +6,10 @@ at the real knowledge base so API-level tests exercise real ingestion.
 """
 
 import os
+import tempfile
 from pathlib import Path
 
 os.environ["EMBEDDINGS_PROVIDER"] = "fake"
+os.environ["LLM_PROVIDER"] = "fake"
 os.environ["CONTENT_DIR"] = str(Path(__file__).resolve().parents[2] / "content")
+os.environ["DATA_DIR"] = tempfile.mkdtemp(prefix="portfolio-test-")

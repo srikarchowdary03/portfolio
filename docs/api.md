@@ -6,9 +6,9 @@ on the deployed backend — the schema is itself a portfolio artifact.
 | Endpoint | Method | Status | Purpose |
 |---|---|---|---|
 | `/api/healthz` | GET | ✅ Phase 0 | Liveness probe for Railway + uptime monitors |
-| `/api/search` | GET | Phase 1 | Semantic search over the knowledge base |
-| `/api/chat` | POST (SSE) | Phase 2 | The assistant: streamed grounded answers |
-| `/api/chat/suggestions` | GET | Phase 3 | Starter question chips for the chat UI |
+| `/api/search` | GET | ✅ Phase 1 | Semantic search over the knowledge base |
+| `/api/chat` | POST (SSE) | ✅ Phase 2 | The assistant: streamed grounded answers |
+| `/api/chat/suggestions` | GET | ✅ Phase 2 | Starter question chips for the chat UI |
 | `/api/feedback` | POST | Phase 3 | Thumbs up/down on answers → SQLite |
 
 ## `/api/chat` — the core contract

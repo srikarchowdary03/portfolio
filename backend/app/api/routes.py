@@ -1,17 +1,33 @@
 """API routes.
 
-Phase 1 surface: health check + semantic search over the knowledge base.
-Later phases add /api/chat (SSE), /api/chat/suggestions, /api/feedback.
+Phase 2 surface: health, semantic search, the AI assistant (SSE), starter
+suggestions. Phase 3 adds /api/feedback alongside the chat UI.
 """
 
+import asyncio
+import json
 import time
+from collections.abc import AsyncIterator
 
 from fastapi import APIRouter, HTTPException, Query, Request
-from pydantic import BaseModel
+from fastapi.concurrency import run_in_threadpool
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel, Field
 
 from app.rag.models import SearchResult
 
 router = APIRouter(prefix="/api")
+
+STREAM_CHUNK_CHARS = 24  # re-chunk size for the verified answer (see /api/chat)
+
+SUGGESTED_QUESTIONS = [
+    "Tell me about this candidate.",
+    "What LLM experience does he have?",
+    "Show me his NLP projects.",
+    "Why should I hire him?",
+    "What is his work authorization status?",
+    "How does the AI behind this portfolio work?",
+]
 
 
 class HealthResponse(BaseModel):
@@ -24,6 +40,15 @@ class SearchResponse(BaseModel):
     results: list[SearchResult]
     count: int
     latency_ms: int
+
+
+class ChatRequest(BaseModel):
+    session_id: str = Field(min_length=8, max_length=64)
+    message: str = Field(min_length=1, max_length=2000)
+
+
+def _sse(event: str, payload: dict) -> str:
+    return f"event: {event}\ndata: {json.dumps(payload)}\n\n"
 
 
 @router.get("/healthz", response_model=HealthResponse)
@@ -58,4 +83,75 @@ def search(
         results=results,
         count=len(results),
         latency_ms=round((time.perf_counter() - started) * 1000),
+    )
+
+
+@router.get("/chat/suggestions")
+def chat_suggestions() -> dict:
+    """Starter questions for the chat UI."""
+    return {"suggestions": SUGGESTED_QUESTIONS}
+
+
+@router.post("/chat")
+async def chat(request: Request, body: ChatRequest) -> StreamingResponse:
+    """The AI Recruiter Assistant.
+
+    Verify-then-stream: the agent runs to completion (including the
+    groundedness gate) BEFORE any token is emitted, then the verified answer
+    streams as SSE. Trades ~1-2s of time-to-first-token for a guarantee that
+    no unverified claim ever reaches the client (docs/agent-graph.md).
+    """
+    agent = getattr(request.app.state, "agent", None)
+    if agent is None:
+        raise HTTPException(status_code=503, detail="Assistant is not available")
+    sessions = request.app.state.sessions
+    chatlog = request.app.state.chatlog
+
+    async def event_stream() -> AsyncIterator[str]:
+        started = time.perf_counter()
+        try:
+            history = sessions.history(body.session_id)
+            # The agent is synchronous (OpenAI SDK calls); run it off the
+            # event loop so one slow generation doesn't block other requests.
+            result = await run_in_threadpool(agent.run, body.message, history)
+        except Exception:  # noqa: BLE001 — stream must end with an event, never hang
+            yield _sse("error", {"message": "Something went wrong. Please try again."})
+            return
+
+        latency_ms = round((time.perf_counter() - started) * 1000)
+        sessions.append(body.session_id, "user", body.message)
+        sessions.append(body.session_id, "assistant", result.answer)
+        chatlog.log_turn(
+            session_id=body.session_id,
+            question=body.message,
+            answer=result.answer,
+            intent=result.intent,
+            grounded=result.grounded,
+            retrieved_count=result.retrieved_count,
+            used_count=result.used_count,
+            chunk_sources=[c.source_file for c in result.citations],
+            latency_ms=latency_ms,
+        )
+
+        text = result.answer
+        for start in range(0, len(text), STREAM_CHUNK_CHARS):
+            yield _sse("token", {"text": text[start : start + STREAM_CHUNK_CHARS]})
+            await asyncio.sleep(0.012)  # smooth typing cadence for the UI
+        yield _sse("sources", {"sources": [c.model_dump() for c in result.citations]})
+        yield _sse(
+            "meta",
+            {
+                "latency_ms": latency_ms,
+                "intent": result.intent,
+                "grounded": result.grounded,
+                "retrieved": result.retrieved_count,
+                "used": result.used_count,
+            },
+        )
+        yield _sse("done", {})
+
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )

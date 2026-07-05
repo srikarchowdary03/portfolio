@@ -11,19 +11,23 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.agent.graph import AgentRunner
+from app.agent.llm import build_llm
 from app.api.routes import router
 from app.core.config import get_settings
 from app.rag.embedder import build_embedder
 from app.rag.ingest import ingest
 from app.rag.retriever import Retriever
 from app.rag.store import VectorStore
+from app.services.chatlog import ChatLog
+from app.services.sessions import SessionStore
 
 logging.basicConfig(level=logging.INFO)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    """Build the RAG index before serving traffic (ADR-002: rebuild on deploy).
+    """Build the RAG index and agent before serving traffic (ADR-002).
 
     The platform's health check only passes once startup completes, so a
     deploy never serves requests against a half-built index.
@@ -32,7 +36,13 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     embedder = build_embedder(settings.embeddings_provider, settings.openai_api_key)
     store = VectorStore()
     ingest(content_dir=settings.content_path, embedder=embedder, store=store)
-    app.state.retriever = Retriever(embedder, store)
+    retriever = Retriever(embedder, store)
+
+    llm = build_llm(settings.llm_provider, settings.openai_api_key, settings.chat_model)
+    app.state.retriever = retriever
+    app.state.agent = AgentRunner(retriever, llm)
+    app.state.sessions = SessionStore()
+    app.state.chatlog = ChatLog(settings.chatlog_path)
     yield
 
 
