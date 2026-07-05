@@ -7,7 +7,6 @@ import { Nav } from "@/components/site/Nav";
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <div className="ambient" />
       <Nav />
       <div className="flex-1">{children}</div>
       <Footer />

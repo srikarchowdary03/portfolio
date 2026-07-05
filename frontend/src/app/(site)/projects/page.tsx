@@ -14,16 +14,17 @@ export default function ProjectsPage() {
   return (
     <main className="mx-auto max-w-6xl px-5 py-16">
       <Reveal>
-        <h1 className="text-3xl font-bold">Projects</h1>
-        <p className="mt-2 max-w-xl text-sm text-muted">
+        <p className="microlabel">Index — {projects.length} projects</p>
+        <h1 className="display mt-3 text-3xl font-semibold">Projects</h1>
+        <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
           Every page here renders from the same markdown my AI assistant
           retrieves and cites — one source of truth for humans and machines.
         </p>
       </Reveal>
-      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-12">
         {projects.map((project, i) => (
-          <Reveal key={project.slug} delay={i * 0.05}>
-            <ProjectCard project={project} />
+          <Reveal key={project.slug} delay={i * 0.04}>
+            <ProjectCard project={project} index={i} />
           </Reveal>
         ))}
       </div>

@@ -18,23 +18,30 @@ export function FeedbackButtons({ turnId }: { turnId: number }) {
     }).catch(() => {});
   };
 
+  if (selected) {
+    return <span className="microlabel">Thanks</span>;
+  }
+
   return (
-    <span className="flex items-center gap-1">
-      {(["up", "down"] as const).map((rating) => (
-        <button
-          key={rating}
-          type="button"
-          aria-label={rating === "up" ? "Helpful" : "Not helpful"}
-          data-testid={`feedback-${rating}`}
-          onClick={() => submit(rating)}
-          disabled={selected !== null}
-          className={`cursor-pointer rounded px-1 text-xs transition-opacity disabled:cursor-default ${
-            selected === rating ? "opacity-100" : selected ? "opacity-25" : "opacity-55 hover:opacity-100"
-          }`}
-        >
-          {rating === "up" ? "👍" : "👎"}
-        </button>
-      ))}
+    <span className="microlabel flex items-baseline gap-2">
+      Helpful?
+      <button
+        type="button"
+        data-testid="feedback-up"
+        onClick={() => submit("up")}
+        className="cursor-pointer font-mono !text-foreground transition-colors hover:!text-accent"
+      >
+        Y
+      </button>
+      <span aria-hidden>/</span>
+      <button
+        type="button"
+        data-testid="feedback-down"
+        onClick={() => submit("down")}
+        className="cursor-pointer font-mono !text-foreground transition-colors hover:!text-accent"
+      >
+        N
+      </button>
     </span>
   );
 }

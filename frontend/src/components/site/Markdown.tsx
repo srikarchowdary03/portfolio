@@ -7,18 +7,20 @@ export function Markdown({ children }: { children: string }) {
       <ReactMarkdown
         components={{
           h2: ({ children }) => (
-            <h2 className="mb-3 mt-10 border-b border-border-soft/60 pb-2 text-xl font-semibold first:mt-0">
+            <h2 className="mb-4 mt-10 border-t border-border-soft pt-6 text-lg font-semibold first:mt-0 first:border-t-0 first:pt-0">
               {children}
             </h2>
           ),
           h3: ({ children }) => (
-            <h3 className="mb-2 mt-6 text-lg font-semibold">{children}</h3>
+            <h3 className="mb-2 mt-6 text-base font-semibold">{children}</h3>
           ),
           p: ({ children }) => (
-            <p className="mb-4 leading-relaxed text-foreground/85">{children}</p>
+            <p className="mb-4 text-[15px] leading-relaxed text-foreground/85">
+              {children}
+            </p>
           ),
           ul: ({ children }) => (
-            <ul className="mb-4 list-disc space-y-1.5 pl-6 text-foreground/85">
+            <ul className="mb-4 list-disc space-y-1.5 pl-6 text-[15px] text-foreground/85">
               {children}
             </ul>
           ),
@@ -30,13 +32,13 @@ export function Markdown({ children }: { children: string }) {
               href={href}
               target="_blank"
               rel="noreferrer"
-              className="text-cyan underline decoration-cyan/40 hover:decoration-cyan"
+              className="text-accent underline decoration-accent-dim underline-offset-4 transition-colors hover:decoration-accent"
             >
               {children}
             </a>
           ),
           code: ({ children }) => (
-            <code className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[0.85em]">
+            <code className="rounded-sm bg-surface-2 px-1.5 py-0.5 font-mono text-[0.85em]">
               {children}
             </code>
           ),

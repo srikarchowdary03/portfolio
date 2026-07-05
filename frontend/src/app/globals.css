@@ -1,17 +1,19 @@
 @import "tailwindcss";
 
-/* Interim design tokens — the full design system lands in Phase 4.
-   Dark "premium AI product" theme per docs/architecture direction. */
+/* Design system v2 — "engineering blueprint".
+   Near-monochrome: true black surface, off-white type, gray hairlines.
+   ONE accent (amber), used sparingly: links, active states, small marks.
+   Structure comes from 1px hairline borders and monospace micro-labels,
+   never from gradients, glows, or colored shadows. */
 :root {
-  --background: #070b14;
-  --surface: #0e1526;
-  --surface-2: #141d33;
-  --border: #232f4b;
-  --foreground: #e6eaf2;
-  --muted: #8a94a7;
-  --accent: #7c5cff;
-  --accent-soft: #2a2450;
-  --cyan: #22d3ee;
+  --background: #0a0a0a;
+  --surface: #111111;
+  --surface-2: #161616;
+  --border: #232323;
+  --foreground: #ededed;
+  --muted: #8f8f8f;
+  --accent: #fbbf24; /* amber for text/marks on black */
+  --accent-dim: #b45309; /* amber for borders/quiet uses */
 }
 
 @theme inline {
@@ -22,8 +24,7 @@
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
-  --color-accent-soft: var(--accent-soft);
-  --color-cyan: var(--cyan);
+  --color-accent-dim: var(--accent-dim);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -34,34 +35,32 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
-/* Ambient glows behind everything — quiet, fixed, never moves with scroll. */
-.ambient {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(600px 420px at 12% -8%, rgba(124, 92, 255, 0.16), transparent 65%),
-    radial-gradient(700px 480px at 95% 8%, rgba(34, 211, 238, 0.09), transparent 65%),
-    radial-gradient(800px 500px at 50% 115%, rgba(124, 92, 255, 0.1), transparent 70%);
+/* Monospace micro-label: section markers, tags, stats, chat meta. */
+.microlabel {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
-/* Gradient identity mark + gradient text */
-.orb {
-  background: linear-gradient(135deg, var(--accent), var(--cyan));
-}
-.gradient-text {
-  background: linear-gradient(90deg, #a78bfa, var(--cyan));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+/* Display type: tight, engineered. */
+.display {
+  letter-spacing: -0.04em;
+  line-height: 1.05;
 }
 
-/* Message entrance */
+/* Blueprint dot grid — renders as 1px dots, not a color wash. */
+.blueprint {
+  background-image: radial-gradient(circle, #1c1c1c 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Message entrance (kept subtle) */
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -69,13 +68,13 @@ body {
   }
 }
 .rise {
-  animation: rise 0.35s ease-out both;
+  animation: rise 0.3s ease-out both;
 }
 
 /* Source panel slide-in */
 @keyframes slide-in {
   from {
-    transform: translateX(24px);
+    transform: translateX(16px);
     opacity: 0;
   }
   to {
@@ -84,14 +83,14 @@ body {
   }
 }
 .slide-in {
-  animation: slide-in 0.25s ease-out both;
+  animation: slide-in 0.2s ease-out both;
 }
 
 /* Blinking caret while an answer streams */
 .streaming-caret::after {
   content: "▍";
   margin-left: 2px;
-  color: var(--cyan);
+  color: var(--accent);
   animation: blink 0.9s steps(2) infinite;
 }
 @keyframes blink {
@@ -105,15 +104,15 @@ body {
   width: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--surface-2);
-  border-radius: 8px;
+  background: #1e1e1e;
+  border-radius: 0;
   border: 2px solid var(--background);
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--border);
 }
 
-/* Markdown content inside chat bubbles */
+/* Markdown content inside chat bubbles and content pages */
 .chat-markdown p {
   margin: 0 0 0.75em;
 }

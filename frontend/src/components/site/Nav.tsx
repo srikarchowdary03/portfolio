@@ -8,31 +8,29 @@ const LINKS = [
 
 export function Nav() {
   return (
-    <header className="sticky top-0 z-30 border-b border-border-soft/60 bg-background/70 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
-        <Link href="/" className="flex items-center gap-2.5">
-          <span className="orb flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-white shadow-lg shadow-accent/25">
-            S
-          </span>
-          <span className="hidden text-sm font-semibold sm:inline">
-            Srikar Pattipati
-          </span>
+    <header className="sticky top-0 z-30 border-b border-border-soft bg-background/85 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
+        <Link
+          href="/"
+          className="microlabel !text-foreground transition-colors hover:!text-accent"
+        >
+          Srikar&nbsp;Pattipati
         </Link>
-        <nav className="flex items-center gap-1 sm:gap-2">
+        <nav className="flex items-center gap-0.5 sm:gap-1">
           {LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-lg px-3 py-1.5 text-sm text-muted transition-colors hover:bg-surface hover:text-foreground"
+              className="microlabel rounded px-2.5 py-2 transition-colors hover:!text-foreground sm:px-3"
             >
               {link.label}
             </Link>
           ))}
           <Link
             href="/chat"
-            className="orb ml-1 rounded-lg px-3.5 py-1.5 text-sm font-semibold text-white shadow-lg shadow-accent/25 transition-all hover:brightness-110"
+            className="microlabel ml-2 rounded-md bg-foreground px-3.5 py-2 !text-background transition-colors hover:bg-[#d4d4d4]"
           >
-            Ask my AI ✦
+            Ask my AI
           </Link>
         </nav>
       </div>

@@ -14,10 +14,11 @@ export default function ResumePage() {
   return (
     <main className="mx-auto max-w-3xl px-5 py-16">
       <Reveal>
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border-soft pb-6">
           <div>
-            <h1 className="text-3xl font-bold">Resume</h1>
-            <p className="mt-1 text-sm text-muted">
+            <p className="microlabel">Document</p>
+            <h1 className="display mt-2 text-3xl font-semibold">Resume</h1>
+            <p className="mt-2 text-sm text-muted">
               The same document my AI assistant cites when you ask about me.
             </p>
           </div>
@@ -25,13 +26,13 @@ export default function ResumePage() {
             href="/resume.pdf"
             download
             data-testid="resume-download"
-            className="orb rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-accent/25 hover:brightness-110"
+            className="rounded-md bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-[#d4d4d4]"
           >
-            Download PDF ↓
+            Download PDF
           </a>
         </div>
       </Reveal>
-      <div className="mt-10 rounded-3xl border border-border-soft bg-surface/60 p-6 sm:p-10">
+      <div className="mt-10">
         <Markdown>{resume.body}</Markdown>
       </div>
     </main>

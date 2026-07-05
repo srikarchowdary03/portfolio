@@ -18,7 +18,7 @@ export function ChatMessage({ message, isLatest, onOpenSource, onAskFollowup }: 
   if (message.role === "user") {
     return (
       <div className="rise flex justify-end">
-        <div className="max-w-[85%] rounded-3xl rounded-br-md bg-gradient-to-br from-accent/90 to-accent/60 px-5 py-3 text-sm leading-relaxed text-white shadow-lg shadow-accent/10">
+        <div className="max-w-[85%] rounded-md bg-foreground px-4 py-2.5 text-sm leading-relaxed text-background">
           {message.content}
         </div>
       </div>
@@ -30,15 +30,15 @@ export function ChatMessage({ message, isLatest, onOpenSource, onAskFollowup }: 
 
   return (
     <div className="rise flex items-start gap-3">
-      <div className="orb mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[13px] font-bold text-white shadow-lg shadow-accent/30">
-        S
+      <div className="microlabel mt-1 flex h-7 w-7 shrink-0 items-center justify-center border border-border-soft !text-muted">
+        AI
       </div>
       <div className="min-w-0 flex-1 space-y-2.5">
         <div
-          className={`rounded-3xl rounded-tl-md border px-5 py-4 text-sm leading-relaxed shadow-xl shadow-black/20 ${
+          className={`border px-5 py-4 text-sm leading-relaxed ${
             message.status === "error"
-              ? "border-red-900/60 bg-red-950/30 text-red-200"
-              : "border-border-soft/70 bg-surface/90"
+              ? "border-red-900/70 bg-red-950/20 text-red-200"
+              : "border-border-soft bg-surface"
           }`}
           data-testid="assistant-message"
         >
@@ -62,9 +62,9 @@ export function ChatMessage({ message, isLatest, onOpenSource, onAskFollowup }: 
                           onClick={() => onOpenSource(source)}
                           title={source.title}
                           data-testid={`citation-${n}`}
-                          className="mx-0.5 inline-flex h-4.5 min-w-4.5 translate-y-[-2px] cursor-pointer items-center justify-center rounded-full bg-accent/25 px-1 align-middle text-[10px] font-semibold text-cyan transition-colors hover:bg-accent/60 hover:text-white"
+                          className="mx-0.5 inline-flex translate-y-[-3px] cursor-pointer items-center font-mono text-[10px] font-semibold text-accent hover:underline"
                         >
-                          {n}
+                          [{n}]
                         </button>
                       );
                     }
@@ -79,32 +79,26 @@ export function ChatMessage({ message, isLatest, onOpenSource, onAskFollowup }: 
           )}
 
           {message.status === "done" && message.sources && message.sources.length > 0 && (
-            <div className="mt-3.5 flex flex-wrap items-center gap-1.5 border-t border-border-soft/60 pt-3">
-              <span className="mr-1 text-[10px] font-medium uppercase tracking-[0.15em] text-muted">
-                Sources
-              </span>
+            <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1.5 border-t border-border-soft pt-3">
+              <span className="microlabel">Sources</span>
               {message.sources.map((source) => (
                 <button
                   key={source.n}
                   type="button"
                   onClick={() => onOpenSource(source)}
-                  className="cursor-pointer rounded-full border border-border-soft bg-surface-2/80 px-2.5 py-0.5 text-[11px] text-foreground/75 transition-colors hover:border-accent hover:text-cyan"
+                  className="cursor-pointer font-mono text-[11px] text-muted transition-colors hover:text-accent"
                 >
-                  <span className="text-cyan">{source.n}</span> · {source.title}
+                  [{source.n}] {source.title}
                 </button>
               ))}
             </div>
           )}
 
           {message.status === "done" && message.meta && (
-            <div className="mt-2.5 flex items-center justify-between gap-3">
-              <span className="text-[11px] text-muted">
-                {message.meta.grounded ? (
-                  <span className="text-emerald-400/80">✓ grounded</span>
-                ) : (
-                  <span className="text-amber-400/80">⚠ partially grounded</span>
-                )}{" "}
-                · {(message.meta.latency_ms / 1000).toFixed(1)}s ·{" "}
+            <div className="mt-3 flex items-baseline justify-between gap-3">
+              <span className="microlabel">
+                {message.meta.grounded ? "grounded" : "partially grounded"} ·{" "}
+                {(message.meta.latency_ms / 1000).toFixed(1)}s ·{" "}
                 {message.meta.used}/{message.meta.retrieved} sources
               </span>
               {message.meta.turn_id != null && (
@@ -118,15 +112,15 @@ export function ChatMessage({ message, isLatest, onOpenSource, onAskFollowup }: 
           message.status === "done" &&
           message.followups &&
           message.followups.length > 0 && (
-            <div className="flex flex-wrap gap-2" data-testid="followups">
+            <div className="flex flex-col items-start gap-1.5" data-testid="followups">
               {message.followups.map((question) => (
                 <button
                   key={question}
                   type="button"
                   onClick={() => onAskFollowup(question)}
-                  className="cursor-pointer rounded-full border border-border-soft bg-surface/70 px-3.5 py-1.5 text-xs text-foreground/80 transition-all hover:-translate-y-px hover:border-accent hover:text-cyan"
+                  className="cursor-pointer text-[13px] text-muted transition-colors hover:text-accent"
                 >
-                  <span className="mr-1 text-cyan">↳</span>
+                  <span className="mr-1.5 font-mono text-accent-dim">↳</span>
                   {question}
                 </button>
               ))}

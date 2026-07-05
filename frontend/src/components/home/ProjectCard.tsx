@@ -2,39 +2,49 @@ import Link from "next/link";
 
 import type { ContentDoc } from "@/lib/content-types";
 
-export function ProjectCard({ project }: { project: ContentDoc }) {
+/** Editorial index row (replaces the old card): number, title, tags, year. */
+export function ProjectCard({
+  project,
+  index,
+}: {
+  project: ContentDoc;
+  index?: number;
+}) {
   const summary =
     project.body
       .split("## Problem")[1]
       ?.split("##")[0]
       ?.trim()
       .replace(/\n+/g, " ")
-      .slice(0, 180) ?? "";
+      .slice(0, 150) ?? "";
+  const year = project.date?.slice(0, 4) ?? "";
 
   return (
     <Link
       href={`/projects/${project.slug}`}
       data-testid="project-card"
-      className="group flex flex-col gap-3 rounded-2xl border border-border-soft bg-surface/80 p-5 shadow-lg shadow-black/10 transition-all hover:-translate-y-1 hover:border-accent/60 hover:shadow-accent/10"
+      className="group grid grid-cols-[auto_1fr_auto] items-baseline gap-x-5 gap-y-1 border-t border-border-soft py-5 transition-colors last:border-b hover:bg-surface sm:grid-cols-[3rem_1fr_auto_2rem]"
     >
-      <h3 className="text-[15px] font-semibold leading-snug group-hover:text-cyan">
-        {project.title}
-      </h3>
-      {summary && (
-        <p className="line-clamp-3 text-sm leading-relaxed text-muted">
-          {summary}…
-        </p>
+      {index !== undefined && (
+        <span className="microlabel pt-0.5">
+          {String(index + 1).padStart(2, "0")}
+        </span>
       )}
-      <div className="mt-auto flex flex-wrap gap-1.5 pt-1">
-        {project.tags.slice(0, 4).map((tag) => (
-          <span
-            key={tag}
-            className="rounded-full border border-border-soft bg-surface-2/70 px-2 py-0.5 text-[10px] uppercase tracking-wide text-muted"
-          >
-            {tag}
-          </span>
-        ))}
+      <div className="min-w-0">
+        <h3 className="text-[15px] font-medium leading-snug transition-colors group-hover:text-accent">
+          {project.title}
+        </h3>
+        {summary && (
+          <p className="mt-1.5 line-clamp-2 max-w-xl text-sm leading-relaxed text-muted">
+            {summary}…
+          </p>
+        )}
+        <p className="microlabel mt-2">{project.tags.slice(0, 4).join(" · ")}</p>
       </div>
+      <span className="microlabel hidden sm:block">{year}</span>
+      <span className="hidden text-muted transition-colors group-hover:text-accent sm:block">
+        →
+      </span>
     </Link>
   );
 }

@@ -38,68 +38,56 @@ function ChatScreen() {
 
   return (
     <div className="flex h-dvh flex-col">
-      <div className="ambient" />
-
-      <header className="border-b border-border-soft/70 bg-surface/40 backdrop-blur-md">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-3">
+      <header className="border-b border-border-soft bg-background/85 backdrop-blur">
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3.5">
+          <div>
             <Link
               href="/"
-              aria-label="Back to portfolio"
-              className="orb flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold text-white shadow-lg shadow-accent/25 transition-transform hover:scale-105"
+              className="microlabel transition-colors hover:!text-foreground"
             >
-              S
+              ← Srikar Pattipati
             </Link>
-            <div>
-              <h1 className="text-[15px] font-semibold leading-tight">
-                AI Recruiter Assistant
-              </h1>
-              <p className="text-xs text-muted">
-                Sai Srikar Chowdary Pattipati · AI/ML Engineer
-              </p>
+            <div className="mt-1 flex items-baseline gap-3">
+              <h1 className="text-[15px] font-semibold">AI Recruiter Assistant</h1>
+              <span className="microlabel !text-accent">grounded · cited</span>
             </div>
-            <span className="ml-2 hidden rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-emerald-400 sm:inline">
-              grounded · cited
-            </span>
           </div>
           {messages.length > 0 && (
             <button
               type="button"
               onClick={reset}
               disabled={isStreaming}
-              className="cursor-pointer rounded-lg border border-border-soft px-3 py-1.5 text-xs text-muted transition-colors hover:border-accent hover:text-foreground disabled:opacity-40"
+              className="microlabel cursor-pointer border border-border-soft px-3 py-2 transition-colors hover:border-foreground hover:!text-foreground disabled:opacity-40"
             >
-              + New chat
+              New chat
             </button>
           )}
         </div>
       </header>
 
-      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-5 overflow-y-auto px-4 py-8">
+      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-5 overflow-y-auto px-4 py-8">
         {messages.length === 0 ? (
           <div className="my-auto space-y-8">
-            <div className="space-y-3 text-center">
-              <div className="orb mx-auto flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-bold text-white shadow-xl shadow-accent/30">
-                S
-              </div>
-              <p className="text-3xl font-semibold tracking-tight">
-                Ask me anything <span className="gradient-text">about Srikar</span>
+            <div>
+              <p className="microlabel">Ask me anything about Srikar</p>
+              <p className="display mt-3 text-2xl font-semibold">
+                Grounded answers, with the receipts.
               </p>
-              <p className="mx-auto max-w-md text-sm leading-relaxed text-muted">
-                I retrieve answers from his real resume, project docs, and
-                hiring FAQ — every claim carries a citation you can inspect,
-                and I say so when I don&apos;t know something.
+              <p className="mt-3 max-w-md text-sm leading-relaxed text-muted">
+                I retrieve from his real resume, project docs, and hiring FAQ —
+                every claim carries a citation you can inspect, and I say so
+                when I don&apos;t know something.
               </p>
             </div>
             <SuggestedQuestions onPick={send} />
-            <p className="text-center text-[11px] text-muted">
-              Powered by a RAG pipeline he built — ask{" "}
+            <p className="microlabel">
+              Powered by a RAG pipeline he built —{" "}
               <button
                 type="button"
                 onClick={() => send("How does the AI behind this portfolio work?")}
-                className="cursor-pointer text-cyan underline decoration-cyan/40 hover:decoration-cyan"
+                className="cursor-pointer !text-accent hover:underline"
               >
-                how it works
+                ask how it works
               </button>
             </p>
           </div>
@@ -117,12 +105,12 @@ function ChatScreen() {
         <div ref={bottomRef} />
       </main>
 
-      <footer className="border-t border-border-soft/70 bg-surface/40 backdrop-blur-md">
-        <div className="mx-auto max-w-4xl px-4 py-3.5">
+      <footer className="border-t border-border-soft bg-background/85 backdrop-blur">
+        <div className="mx-auto max-w-3xl px-4 py-3.5">
           <ChatInput onSend={send} disabled={isStreaming} prefill={prefill} />
-          <p className="mt-2 text-center text-[11px] text-muted">
+          <p className="microlabel mt-2.5 text-center">
             Answers come only from Srikar&apos;s knowledge base ·{" "}
-            <Link href="/" className="underline hover:text-foreground">
+            <Link href="/" className="!text-foreground/70 underline underline-offset-4 hover:!text-foreground">
               back to portfolio
             </Link>
           </p>

@@ -7,12 +7,13 @@
 
 import { useEffect, useRef } from "react";
 
+// Monochrome field; a single amber cluster carries the accent.
 const CLUSTERS = [
-  { x: 0.22, y: 0.32, hue: "124, 92, 255" },
-  { x: 0.5, y: 0.62, hue: "34, 211, 238" },
-  { x: 0.78, y: 0.3, hue: "124, 92, 255" },
-  { x: 0.68, y: 0.75, hue: "34, 211, 238" },
-  { x: 0.32, y: 0.8, hue: "167, 139, 250" },
+  { x: 0.22, y: 0.32, hue: "140, 140, 140" },
+  { x: 0.5, y: 0.62, hue: "140, 140, 140" },
+  { x: 0.78, y: 0.3, hue: "251, 191, 36" },
+  { x: 0.68, y: 0.75, hue: "140, 140, 140" },
+  { x: 0.32, y: 0.8, hue: "140, 140, 140" },
 ];
 const POINTS_PER_CLUSTER = 18;
 const LINK_DISTANCE = 90;
@@ -90,7 +91,7 @@ export function EmbeddingField() {
           const dy = points[i].y - points[j].y;
           const dist = Math.hypot(dx, dy);
           if (dist < LINK_DISTANCE) {
-            ctx.strokeStyle = `rgba(${points[i].hue}, ${(0.13 * (1 - dist / LINK_DISTANCE)).toFixed(3)})`;
+            ctx.strokeStyle = `rgba(${points[i].hue}, ${(0.09 * (1 - dist / LINK_DISTANCE)).toFixed(3)})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(points[i].x, points[i].y);
@@ -101,7 +102,7 @@ export function EmbeddingField() {
       }
 
       for (const p of points) {
-        ctx.fillStyle = `rgba(${p.hue}, 0.75)`;
+        ctx.fillStyle = `rgba(${p.hue}, 0.55)`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
@@ -123,7 +124,7 @@ export function EmbeddingField() {
     <canvas
       ref={canvasRef}
       aria-hidden
-      className="absolute inset-0 h-full w-full opacity-60 [mask-image:radial-gradient(75%_75%_at_50%_40%,black,transparent)]"
+      className="absolute inset-0 h-full w-full opacity-50 [mask-image:radial-gradient(80%_80%_at_65%_35%,black,transparent)]"
     />
   );
 }

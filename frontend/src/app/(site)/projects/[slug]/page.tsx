@@ -28,27 +28,23 @@ export default async function ProjectPage({
 
   return (
     <main className="mx-auto max-w-3xl px-5 py-16">
-      <Link href="/projects" className="text-sm text-muted hover:text-foreground">
+      <Link
+        href="/projects"
+        className="microlabel transition-colors hover:!text-foreground"
+      >
         ← All projects
       </Link>
-      <h1 className="mt-4 text-balance text-3xl font-bold leading-tight">
+      <h1 className="display mt-6 text-balance text-3xl font-semibold">
         {project.title}
       </h1>
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        {project.tags.map((tag) => (
-          <span
-            key={tag}
-            className="rounded-full border border-border-soft bg-surface-2/70 px-2.5 py-0.5 text-[11px] uppercase tracking-wide text-muted"
-          >
-            {tag}
-          </span>
-        ))}
+      <div className="mt-5 flex flex-wrap items-baseline gap-x-4 gap-y-2 border-b border-border-soft pb-5">
+        <p className="microlabel">{project.tags.join(" · ")}</p>
         {project.links.github && (
           <a
             href={project.links.github}
             target="_blank"
             rel="noreferrer"
-            className="ml-auto text-sm text-cyan hover:underline"
+            className="microlabel ml-auto !text-accent hover:underline"
           >
             GitHub ↗
           </a>
@@ -59,14 +55,18 @@ export default async function ProjectPage({
         <Markdown>{project.body}</Markdown>
       </div>
 
-      <div className="mt-12 rounded-2xl border border-accent/30 bg-accent-soft/40 p-6 text-center">
-        <p className="text-sm text-muted">Want the interactive version?</p>
+      <div className="mt-14 border border-border-soft p-7">
+        <p className="microlabel">Interactive version</p>
+        <p className="mt-2 text-sm text-muted">
+          My AI assistant can answer follow-up questions about this project —
+          with citations.
+        </p>
         <Link
           href={`/chat?q=${encodeURIComponent(`Tell me about the project "${project.title}" in detail.`)}`}
           data-testid="ask-ai-about-project"
-          className="orb mt-3 inline-block rounded-xl px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-accent/25 hover:brightness-110"
+          className="mt-4 inline-block rounded-md bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-[#d4d4d4]"
         >
-          Ask my AI about this project ✦
+          Ask my AI about this project
         </Link>
       </div>
     </main>
