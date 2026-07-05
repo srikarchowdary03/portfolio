@@ -5,10 +5,11 @@ import { useState } from "react";
 interface Props {
   onSend: (text: string) => void;
   disabled: boolean;
+  prefill?: string;
 }
 
-export function ChatInput({ onSend, disabled }: Props) {
-  const [value, setValue] = useState("");
+export function ChatInput({ onSend, disabled, prefill }: Props) {
+  const [value, setValue] = useState(prefill ?? "");
 
   const submit = () => {
     if (!value.trim() || disabled) return;

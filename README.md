@@ -97,7 +97,7 @@ groundedness), `done`.
 - [x] **Phase 1** — Knowledge base content + ingestion pipeline (chunk → embed → index) + `/api/search`
 - [x] **Phase 2** — LangGraph RAG agent + streaming `/api/chat` with citations
 - [x] **Phase 3** — Chat UI: streaming, citation chips, source panel, feedback
-- [ ] **Phase 4** — Portfolio site: design system, hero, projects, resume
+- [x] **Phase 4** — Portfolio site: hero + embedding-field animation, projects, resume, how-it-works
 - [ ] **Phase 5** — Evaluation harness: golden dataset, hit-rate/MRR, LLM-judge faithfulness
 - [ ] **Phase 6** — Production: Railway + Vercel deploy, rate limiting, monitoring
 - [ ] **Phase 7** — Advanced: JD Matcher, retrieval transparency, hybrid search

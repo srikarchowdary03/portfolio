@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 import { ChatInput } from "@/components/chat/ChatInput";
 import { ChatMessage } from "@/components/chat/ChatMessage";
@@ -11,6 +12,18 @@ import { useChat } from "@/lib/useChat";
 import type { Source } from "@/lib/types";
 
 export default function ChatPage() {
+  // useSearchParams needs a Suspense boundary for static rendering.
+  return (
+    <Suspense>
+      <ChatScreen />
+    </Suspense>
+  );
+}
+
+function ChatScreen() {
+  // Deep links like /chat?q=... (project pages) prefill the input —
+  // visitors keep control; nothing auto-sends.
+  const prefill = useSearchParams().get("q") ?? undefined;
   const { messages, send, reset, isStreaming } = useChat();
   const [openSource, setOpenSource] = useState<Source | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -106,7 +119,7 @@ export default function ChatPage() {
 
       <footer className="border-t border-border-soft/70 bg-surface/40 backdrop-blur-md">
         <div className="mx-auto max-w-4xl px-4 py-3.5">
-          <ChatInput onSend={send} disabled={isStreaming} />
+          <ChatInput onSend={send} disabled={isStreaming} prefill={prefill} />
           <p className="mt-2 text-center text-[11px] text-muted">
             Answers come only from Srikar&apos;s knowledge base ·{" "}
             <Link href="/" className="underline hover:text-foreground">
