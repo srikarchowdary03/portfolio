@@ -91,6 +91,24 @@ The chat response streams SSE events: `token` (answer text), `sources`
 (citations with document metadata), `meta` (latency, retrieval stats,
 groundedness), `done`.
 
+## Evaluating the AI
+
+The RAG system is scored against a golden dataset
+(`backend/evals/golden_qa.jsonl`, ~30 hand-authored Q&A items incl.
+out-of-scope traps and a prompt-injection attempt):
+
+```bash
+cd backend
+uv run python -m evals.run          # writes docs/evals/latest.md + latest.json
+```
+
+Metrics: retrieval hit-rate@6 and MRR, fact recall, citation presence,
+honest-refusal correctness, and — with `LLM_PROVIDER=openai` — LLM-judged
+faithfulness and answer relevance. Under fake providers the judge metrics are
+reported as *skipped*, never simulated. The `Evals` GitHub Action
+(manual trigger) gates on hit-rate ≥ 0.85 and faithfulness ≥ 0.9. Latest
+report: [docs/evals/latest.md](docs/evals/latest.md).
+
 ## Project status / roadmap
 
 - [x] **Phase 0** — Monorepo scaffold, architecture docs, CI, Docker
@@ -98,7 +116,7 @@ groundedness), `done`.
 - [x] **Phase 2** — LangGraph RAG agent + streaming `/api/chat` with citations
 - [x] **Phase 3** — Chat UI: streaming, citation chips, source panel, feedback
 - [x] **Phase 4** — Portfolio site: hero + embedding-field animation, projects, resume, how-it-works
-- [ ] **Phase 5** — Evaluation harness: golden dataset, hit-rate/MRR, LLM-judge faithfulness
+- [x] **Phase 5** — Evaluation harness: golden dataset, hit-rate/MRR, LLM-judge faithfulness
 - [ ] **Phase 6** — Production: Railway + Vercel deploy, rate limiting, monitoring
 - [ ] **Phase 7** — Advanced: JD Matcher, retrieval transparency, hybrid search
 
