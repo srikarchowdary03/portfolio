@@ -76,6 +76,18 @@ def test_groundedness_failure_retries_then_falls_back() -> None:
     assert second["citations"]  # fallback still cites its sources
 
 
+def test_heuristic_generate_quotes_docs_not_prompt_rules() -> None:
+    # Regression: FakeLLM once scraped "[1] or [2]" out of the system prompt's
+    # own citation rule and quoted the agent's instructions back as an answer.
+    chunks = [make_chunk("Hiring FAQ", "Hiring FAQ\nHe builds complete AI products.")]
+    state = {"question": "why hire him?", "history": [], "graded": chunks, "retry_count": 0}
+    update = nodes.generate(state, llm=FakeLLM())
+
+    assert "[1]" in update["draft"]
+    assert "He builds complete AI products" in update["draft"]
+    assert "If the documents do not contain" not in update["draft"]
+
+
 def test_retrieve_falls_back_when_tag_filter_matches_nothing() -> None:
     class StubRetriever:
         def __init__(self) -> None:

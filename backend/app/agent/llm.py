@@ -71,13 +71,28 @@ class FakeLLM:
     def complete(self, system: str, messages: list[dict], max_tokens: int = 700) -> str:
         if self._scripted is not None:
             return self._scripted.pop(0)
-        # Generation: quote the beginning of each numbered <docs> block.
-        docs = re.findall(r"\[(\d+)\][^\n]*\n(.*?)(?=\n\[\d+\]|\Z)", system, re.DOTALL)
-        if not docs:
+        # Generation: quote the numbered blocks INSIDE <docs> only — the
+        # system prompt's own rules also contain "[1]"-style text and even
+        # the literal strings "<docs> and </docs>", so anchor on the newline
+        # that only the real block has after its opening tag (greedy to the
+        # final closing tag).
+        docs_section = re.search(r"<docs>\n(.*)\n</docs>", system, re.DOTALL)
+        if not docs_section:
             return "I can help with questions about the candidate."
-        parts = [
-            f"{text.strip().splitlines()[0][:160]} [{n}]" for n, text in docs[:3] if text.strip()
-        ]
+        docs = re.findall(
+            r"\[(\d+)\][^\n]*\n(.*?)(?=\n\[\d+\]|\Z)", docs_section.group(1), re.DOTALL
+        )
+        parts = []
+        for n, text in docs[:3]:
+            # Chunk text starts with the title line the chunker prefixed;
+            # quote the first content line after it (fall back to the title).
+            lines = [line.strip() for line in text.strip().splitlines() if line.strip()]
+            if not lines:
+                continue
+            quote = lines[1] if len(lines) > 1 else lines[0]
+            parts.append(f"{quote[:160]} [{n}]")
+        if not parts:
+            return "I can help with questions about the candidate."
         return "Based on the candidate's documents: " + " ".join(parts)
 
     def complete_json(self, system: str, user: str) -> dict:
