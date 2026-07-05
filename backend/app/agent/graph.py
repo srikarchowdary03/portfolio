@@ -66,6 +66,7 @@ class AgentRunner:
             grounded=final.get("grounded", False),
             retrieved_count=len(final.get("retrieved", [])),
             used_count=len(final.get("graded", [])),
+            context_texts=[chunk.text for chunk in final.get("graded", [])],
         )
 
     def suggest_followups(self, question: str, answer: str) -> list[str]:

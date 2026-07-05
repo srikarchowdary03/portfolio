@@ -41,3 +41,7 @@ class AgentResult(BaseModel):
     grounded: bool
     retrieved_count: int
     used_count: int
+    # Full text of the graded chunks the generator actually saw. Not exposed
+    # over the API; the eval judge audits faithfulness against THIS context,
+    # not raw retrieval (which can differ under tag-filtered search).
+    context_texts: list[str] = []

@@ -65,7 +65,15 @@ def evaluate_item(
     }
 
     if use_judges and item.answerable and not refused:
-        docs_text = format_docs(retrieved)
+        # Audit against the context the generator ACTUALLY saw (graded,
+        # possibly tag-filtered chunks) — raw retrieval can differ and would
+        # produce false "unsupported claim" flags.
+        if result.context_texts:
+            docs_text = "\n\n".join(
+                f"[{n}] {text}" for n, text in enumerate(result.context_texts, start=1)
+            )
+        else:
+            docs_text = format_docs(retrieved)
         record["faithfulness"], record["unsupported_claims"] = judges.judge_faithfulness(
             llm, docs_text, result.answer
         )
