@@ -1,0 +1,84 @@
+# AI-Powered Portfolio — "A portfolio you can interrogate"
+
+A portfolio that is itself an AI product: a modern portfolio site **plus an AI
+Recruiter Assistant** that answers questions about the candidate — grounded in
+a real knowledge base via Retrieval-Augmented Generation, with source
+citations on every answer and an evaluation suite proving it doesn't hallucinate.
+
+```
+Ask it:  "What LLM experience does he have?"
+         "Show me his NLP projects."
+         "Why should I hire him?"          → answers cite resume, project docs, research notes
+```
+
+## Architecture at a glance
+
+```mermaid
+flowchart LR
+    U(("Visitor")) --> FE["Next.js on Vercel<br/>portfolio + chat UI"]
+    FE -->|SSE| BE["FastAPI on Railway<br/>LangGraph agent"]
+    BE --> V[("ChromaDB<br/>embedded index")]
+    BE --> O["OpenAI<br/>gpt-4o-mini + embeddings"]
+    K["/content — markdown KB<br/>(single source of truth)"] --> FE
+    K --> V
+```
+
+The agent is an explicit LangGraph state machine —
+`router → retrieve → grade → generate → groundedness check` — so retrieval
+quality and generation quality are separately testable, and unanswerable
+questions get an honest "I don't know" instead of a hallucination.
+
+**Full documentation:** [System architecture](docs/architecture.md) ·
+[RAG pipeline](docs/rag-pipeline.md) · [Agent graph](docs/agent-graph.md) ·
+[API](docs/api.md) · [Deployment](docs/deployment.md) ·
+[Architecture decision records](docs/decisions/)
+
+## Stack
+
+**Next.js 16 · TypeScript · Tailwind · Framer Motion** — frontend, on Vercel ·
+**Python · FastAPI · LangGraph** — backend, Dockerized on Railway ·
+**OpenAI gpt-4o-mini + text-embedding-3-small · ChromaDB** — AI layer ·
+**GitHub Actions** — CI · **pytest / ruff / eslint / tsc** — quality gates
+
+Why these and not others (including what was deliberately rejected):
+[ADR-001](docs/decisions/adr-001-tech-stack.md),
+[ADR-002](docs/decisions/adr-002-embedded-chroma.md).
+
+## Run it locally
+
+```bash
+# Backend (needs Python 3.11+ and uv)
+cd backend
+cp .env.example .env          # add OPENAI_API_KEY from Phase 1 onward
+uv sync
+uv run uvicorn app.main:app --reload --port 8000
+# → http://localhost:8000/docs
+
+# Frontend (needs Node 20+)
+cd frontend
+npm install
+npm run dev
+# → http://localhost:3000
+```
+
+Or the backend via Docker: `docker compose up --build`.
+
+## Project status / roadmap
+
+- [x] **Phase 0** — Monorepo scaffold, architecture docs, CI, Docker
+- [ ] **Phase 1** — Knowledge base content + ingestion pipeline (chunk → embed → index) + `/api/search`
+- [ ] **Phase 2** — LangGraph RAG agent + streaming `/api/chat` with citations
+- [ ] **Phase 3** — Chat UI: streaming, citation chips, feedback
+- [ ] **Phase 4** — Portfolio site: design system, hero, projects, resume
+- [ ] **Phase 5** — Evaluation harness: golden dataset, hit-rate/MRR, LLM-judge faithfulness
+- [ ] **Phase 6** — Production: Railway + Vercel deploy, rate limiting, monitoring
+- [ ] **Phase 7** — Advanced: JD Matcher, retrieval transparency, hybrid search
+
+## Repository layout
+
+```
+content/    knowledge base — markdown that feeds BOTH the site and the RAG index
+frontend/   Next.js app (portfolio pages + chat UI)
+backend/    FastAPI app (RAG pipeline, LangGraph agent, evals)
+docs/       architecture documentation + ADRs
+```

@@ -1,0 +1,12 @@
+# One-command local development: docker compose up --build
+# Frontend is usually run natively (npm run dev) for fast refresh; this file
+# exists to prove the production backend image works end-to-end on any machine.
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./content:/app/content:ro
