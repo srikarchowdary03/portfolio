@@ -31,7 +31,10 @@ def test_chat_streams_tokens_sources_meta_done() -> None:
     names = [name for name, _ in events]
 
     assert names[0] == "token"
-    assert names[-3:] == ["sources", "meta", "done"]
+    assert names[-4:] == ["sources", "meta", "followups", "done"]
+
+    followups = next(data for name, data in events if name == "followups")["questions"]
+    assert 1 <= len(followups) <= 3 and all(isinstance(q, str) for q in followups)
     answer = "".join(data["text"] for name, data in events if name == "token")
     assert len(answer) > 20
 

@@ -34,6 +34,85 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
+/* Ambient glows behind everything — quiet, fixed, never moves with scroll. */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(600px 420px at 12% -8%, rgba(124, 92, 255, 0.16), transparent 65%),
+    radial-gradient(700px 480px at 95% 8%, rgba(34, 211, 238, 0.09), transparent 65%),
+    radial-gradient(800px 500px at 50% 115%, rgba(124, 92, 255, 0.1), transparent 70%);
+}
+
+/* Gradient identity mark + gradient text */
+.orb {
+  background: linear-gradient(135deg, var(--accent), var(--cyan));
+}
+.gradient-text {
+  background: linear-gradient(90deg, #a78bfa, var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Message entrance */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rise {
+  animation: rise 0.35s ease-out both;
+}
+
+/* Source panel slide-in */
+@keyframes slide-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.slide-in {
+  animation: slide-in 0.25s ease-out both;
+}
+
+/* Blinking caret while an answer streams */
+.streaming-caret::after {
+  content: "▍";
+  margin-left: 2px;
+  color: var(--cyan);
+  animation: blink 0.9s steps(2) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--surface-2);
+  border-radius: 8px;
+  border: 2px solid var(--background);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border);
+}
+
 /* Markdown content inside chat bubbles */
 .chat-markdown p {
   margin: 0 0 0.75em;

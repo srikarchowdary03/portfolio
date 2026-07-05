@@ -30,9 +30,12 @@ export function SuggestedQuestions({ onPick }: { onPick: (q: string) => void }) 
           key={question}
           type="button"
           onClick={() => onPick(question)}
-          className="cursor-pointer rounded-xl border border-border-soft bg-surface px-4 py-3 text-left text-sm text-foreground/85 transition-colors hover:border-accent hover:bg-surface-2"
+          className="group cursor-pointer rounded-2xl border border-border-soft bg-surface/80 px-4 py-3.5 text-left text-sm text-foreground/85 shadow-lg shadow-black/10 transition-all hover:-translate-y-0.5 hover:border-accent/70 hover:bg-surface-2 hover:shadow-accent/10"
         >
           {question}
+          <span className="ml-1.5 inline-block text-cyan opacity-0 transition-opacity group-hover:opacity-100">
+            →
+          </span>
         </button>
       ))}
     </div>

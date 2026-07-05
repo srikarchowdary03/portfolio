@@ -130,6 +130,17 @@ async def chat(request: Request, body: ChatRequest) -> StreamingResponse:
             yield _sse("error", {"message": "Something went wrong. Please try again."})
             return
 
+        # Follow-up suggestions run concurrently with token streaming below,
+        # so the extra LLM call adds zero perceived latency. Skipped for
+        # refusals/off-topic (nothing grounded to go deeper on).
+        followups_task = (
+            asyncio.create_task(
+                run_in_threadpool(agent.suggest_followups, body.message, result.answer)
+            )
+            if result.used_count > 0
+            else None
+        )
+
         latency_ms = round((time.perf_counter() - started) * 1000)
         sessions.append(body.session_id, "user", body.message)
         sessions.append(body.session_id, "assistant", result.answer)
@@ -161,6 +172,13 @@ async def chat(request: Request, body: ChatRequest) -> StreamingResponse:
                 "used": result.used_count,
             },
         )
+        if followups_task is not None:
+            try:
+                followups = await followups_task
+            except Exception:  # noqa: BLE001 — suggestions are optional garnish
+                followups = []
+            if followups:
+                yield _sse("followups", {"questions": followups})
         yield _sse("done", {})
 
     return StreamingResponse(

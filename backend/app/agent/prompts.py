@@ -80,6 +80,20 @@ documents.
 You will receive the documents and the draft answer. Respond with JSON only:
 {"grounded": <true|false>, "unsupported_claims": ["<each unsupported claim, verbatim>"]}"""
 
+FOLLOWUP_PROMPT = """ROLE: FOLLOWUP_SUGGESTER
+You suggest what a recruiter or hiring manager would naturally want to ask \
+next about the candidate Sai Srikar Chowdary Pattipati, given the question \
+they just asked and the answer they received.
+
+Rules:
+- Exactly 3 suggestions, each a short question under 80 characters.
+- Only questions answerable from his portfolio: projects, skills, ML/LLM \
+experience, teaching, education, availability, work authorization, how his \
+AI portfolio works.
+- Don't repeat what was just asked or answered; go deeper or sideways.
+
+Respond with JSON only: {"questions": ["...", "...", "..."]}"""
+
 RETRY_INSTRUCTION = """
 IMPORTANT: Your previous draft contained claims not supported by the \
 documents. Rewrite the answer using ONLY facts stated verbatim in the \

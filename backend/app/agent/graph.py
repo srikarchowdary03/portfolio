@@ -16,7 +16,7 @@ from functools import partial
 
 from langgraph.graph import END, StateGraph
 
-from app.agent import nodes
+from app.agent import nodes, prompts
 from app.agent.llm import LLM
 from app.agent.state import AgentResult, AgentState
 from app.rag.retriever import Retriever
@@ -53,6 +53,7 @@ class AgentRunner:
         graph.add_conditional_edges("check_groundedness", _after_groundedness)
 
         self._graph = graph.compile()
+        self._llm = llm
 
     def run(self, question: str, history: list[dict] | None = None) -> AgentResult:
         final: AgentState = self._graph.invoke(
@@ -66,3 +67,14 @@ class AgentRunner:
             retrieved_count=len(final.get("retrieved", [])),
             used_count=len(final.get("graded", [])),
         )
+
+    def suggest_followups(self, question: str, answer: str) -> list[str]:
+        """Post-answer UX, deliberately outside the graph: not part of the
+        grounded answer path, and the API overlaps this call with token
+        streaming so its latency is invisible to the user."""
+        result = self._llm.complete_json(
+            prompts.FOLLOWUP_PROMPT,
+            f"They asked: {question}\n\nThe answer they received:\n{answer[:1500]}",
+        )
+        questions = result.get("questions", [])
+        return [q.strip() for q in questions if isinstance(q, str) and q.strip()][:3]

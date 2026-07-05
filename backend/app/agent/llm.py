@@ -29,7 +29,7 @@ class OpenAILLM:
         self._client = OpenAI(api_key=api_key)
         self._model = model
 
-    def complete(self, system: str, messages: list[dict], max_tokens: int = 700) -> str:
+    def complete(self, system: str, messages: list[dict], max_tokens: int = 900) -> str:
         response = self._client.chat.completions.create(
             model=self._model,
             messages=[{"role": "system", "content": system}, *messages],
@@ -106,6 +106,14 @@ class FakeLLM:
             return self._grade(user)
         if "ROLE: GROUNDEDNESS_JUDGE" in system:
             return {"grounded": True, "unsupported_claims": []}
+        if "ROLE: FOLLOWUP_SUGGESTER" in system:
+            return {
+                "questions": [
+                    "What machine learning projects has he built?",
+                    "What is his work authorization status?",
+                    "How does the AI behind this portfolio work?",
+                ]
+            }
         return {}
 
     @staticmethod

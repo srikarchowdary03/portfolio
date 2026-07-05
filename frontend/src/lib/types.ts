@@ -22,5 +22,6 @@ export interface ChatMessage {
   content: string;
   sources?: Source[];
   meta?: ChatMeta;
+  followups?: string[];
   status: "streaming" | "done" | "error";
 }

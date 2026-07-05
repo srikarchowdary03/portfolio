@@ -5,6 +5,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-8 px-6 py-24 text-center">
+      <div className="ambient" />
       <div className="space-y-4">
         <p className="text-sm uppercase tracking-[0.25em] text-cyan">
           AI/ML Engineer · Boston, MA

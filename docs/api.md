@@ -24,7 +24,8 @@ Response: `text/event-stream` (SSE). Event sequence:
 ```
 event: token      data: {"text": "He has"}          ← repeated as tokens generate
 event: sources    data: {"sources": [{"n": 1, "title": "RAG Chatbot", "doc_type": "project", "source_file": "projects/rag-chatbot.md", "excerpt": "..."}]}
-event: meta       data: {"latency_ms": 1840, "retrieved": 6, "used": 3, "grounded": true}
+event: meta       data: {"turn_id": 12, "latency_ms": 1840, "intent": "question", "retrieved": 6, "used": 3, "grounded": true}
+event: followups  data: {"questions": ["...", "...", "..."]}   ← grounded answers only; computed concurrently with the token stream
 event: done       data: {}
 ```
 

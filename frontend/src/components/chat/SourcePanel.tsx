@@ -10,6 +10,7 @@ const DOC_TYPE_LABELS: Record<string, string> = {
   faq: "Hiring FAQ",
   profile: "Profile",
   certification: "Certifications",
+  system: "System Documentation",
 };
 
 interface Props {
@@ -30,8 +31,9 @@ export function SourcePanel({ source, onClose }: Props) {
       />
       <aside
         data-testid="source-panel"
-        className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col border-l border-border-soft bg-surface shadow-2xl"
+        className="slide-in fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col border-l border-accent/30 bg-surface shadow-2xl shadow-black/50"
       >
+        <div className="orb h-1 w-full shrink-0" />
         <div className="flex items-start justify-between gap-4 border-b border-border-soft p-5">
           <div>
             <p className="text-[11px] uppercase tracking-wider text-cyan">

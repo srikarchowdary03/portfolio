@@ -66,6 +66,8 @@ export function useChat() {
             patchMessage(assistantId, { sources: data.sources });
           } else if (event === "meta") {
             patchMessage(assistantId, { meta: data });
+          } else if (event === "followups") {
+            patchMessage(assistantId, { followups: data.questions });
           } else if (event === "done") {
             patchMessage(assistantId, { status: "done" });
           } else if (event === "error") {
@@ -87,5 +89,12 @@ export function useChat() {
     [isStreaming, patchMessage]
   );
 
-  return { messages, send, isStreaming };
+  const reset = useCallback(() => {
+    if (isStreaming) return;
+    setMessages([]);
+    // Fresh session id → the backend forgets the old conversation context.
+    sessionStorage.setItem(SESSION_KEY, crypto.randomUUID());
+  }, [isStreaming]);
+
+  return { messages, send, reset, isStreaming };
 }
