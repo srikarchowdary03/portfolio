@@ -3,10 +3,14 @@
 # exists to prove the production backend image works end-to-end on any machine.
 services:
   backend:
-    build: ./backend
+    build:
+      context: .                     # repo root, so the image can COPY /content
+      dockerfile: backend/Dockerfile
     ports:
       - "8000:8000"
     env_file:
       - ./backend/.env
     volumes:
+      # Live-mount the KB over the baked-in copy so content edits only need a
+      # container restart, not an image rebuild.
       - ./content:/app/content:ro

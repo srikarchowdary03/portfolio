@@ -66,7 +66,7 @@ Or the backend via Docker: `docker compose up --build`.
 ## Project status / roadmap
 
 - [x] **Phase 0** — Monorepo scaffold, architecture docs, CI, Docker
-- [ ] **Phase 1** — Knowledge base content + ingestion pipeline (chunk → embed → index) + `/api/search`
+- [x] **Phase 1** — Knowledge base content + ingestion pipeline (chunk → embed → index) + `/api/search`
 - [ ] **Phase 2** — LangGraph RAG agent + streaming `/api/chat` with citations
 - [ ] **Phase 3** — Chat UI: streaming, citation chips, feedback
 - [ ] **Phase 4** — Portfolio site: design system, hero, projects, resume

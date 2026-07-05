@@ -1,0 +1,12 @@
+# Build context is the repo root; keep it lean — only backend/ and content/
+# actually enter the image.
+.git
+frontend
+docs
+backend/.venv
+backend/.pytest_cache
+backend/.ruff_cache
+backend/tests
+backend/data
+**/__pycache__
+**/.env
