@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sai Srikar Chowdary Pattipati — AI/ML Engineer",
+  title: "SRIKAR v3.0-beta — Sai Srikar Chowdary Pattipati, AI/ML Engineer",
   description:
-    "AI-powered portfolio: browse the work, or ask the AI assistant — grounded answers with citations from real documents.",
+    "A production-grade AI/ML engineer, presented as a product: benchmarks, changelog, integrations — and a live RAG demo that answers questions with citations.",
 };
 
 export default function RootLayout({

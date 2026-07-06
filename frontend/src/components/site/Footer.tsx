@@ -3,9 +3,11 @@ export function Footer() {
     <footer className="border-t border-border-soft">
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-12 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="microlabel">Sai Srikar Chowdary Pattipati</p>
+          <p className="microlabel">
+            SRIKAR v3.0-beta is <span className="!text-foreground">Sai Srikar Chowdary Pattipati</span>
+          </p>
           <p className="mt-2 text-sm text-muted">
-            Boston, MA — open to remote &amp; relocation.
+            Boston, MA — open to remote &amp; relocation. GA May 2026.
           </p>
           <p className="mt-1 text-sm text-muted">
             This site is itself an AI system: RAG, LangGraph, evals.{" "}

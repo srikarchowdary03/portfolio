@@ -16,10 +16,11 @@ export default function ResumePage() {
       <Reveal>
         <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border-soft pb-6">
           <div>
-            <p className="microlabel">Document</p>
-            <h1 className="display mt-2 text-3xl font-semibold">Resume</h1>
+            <p className="microlabel">Technical specification</p>
+            <h1 className="display mt-2 text-3xl font-semibold">The spec sheet</h1>
             <p className="mt-2 text-sm text-muted">
-              The same document my AI assistant cites when you ask about me.
+              Also known as a resume. The same document the demo cites when
+              you ask about him.
             </p>
           </div>
           <a

@@ -19,6 +19,15 @@ describe("content loader (against the real /content knowledge base)", () => {
     expect([...dates].sort().reverse()).toEqual(dates);
   });
 
+  it("parses the career changelog into versioned releases", async () => {
+    const { getReleases } = await import("./content");
+    const releases = getReleases();
+    expect(releases.length).toBe(8);
+    expect(releases[0].version).toBe("v3.0-beta");
+    expect(releases.at(-1)?.version).toBe("v1.0");
+    expect(releases.every((r) => r.title && r.body.length > 50)).toBe(true);
+  });
+
   it("loads single docs by path and by slug", () => {
     expect(getDoc("resume/resume.md").type).toBe("resume");
     expect(getProject("vital-stream")?.title).toContain("vital-stream");

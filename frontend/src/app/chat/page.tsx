@@ -48,8 +48,10 @@ function ChatScreen() {
               ← Srikar Pattipati
             </Link>
             <div className="mt-1 flex items-baseline gap-3">
-              <h1 className="text-[15px] font-semibold">AI Recruiter Assistant</h1>
-              <span className="microlabel !text-accent">grounded · cited</span>
+              <h1 className="font-mono text-[15px] font-semibold tracking-wide">
+                SRIKAR <span className="text-accent">live demo</span>
+              </h1>
+              <span className="microlabel">grounded · cited</span>
             </div>
           </div>
           {messages.length > 0 && (
@@ -69,7 +71,7 @@ function ChatScreen() {
         {messages.length === 0 ? (
           <div className="my-auto space-y-8">
             <div>
-              <p className="microlabel">Ask me anything about Srikar</p>
+              <p className="microlabel">Live demo — ask anything about the candidate</p>
               <p className="display mt-3 text-2xl font-semibold">
                 Grounded answers, with the receipts.
               </p>

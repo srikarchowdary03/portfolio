@@ -48,13 +48,14 @@ export default function HowItWorksPage() {
   return (
     <main className="mx-auto max-w-4xl px-5 py-16">
       <Reveal>
-        <p className="microlabel">Architecture</p>
+        <p className="microlabel">Architecture — how the demo works</p>
         <h1 className="display mt-3 text-3xl font-semibold">
-          How this AI portfolio works
+          The demo is the proof of work
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
-          Every answer the assistant gives runs through a five-step LangGraph
-          pipeline with a hard rule: nothing unverified reaches your screen.
+          The live demo on this site is a RAG system he designed, built, and
+          evaluated. Every answer runs through a five-step LangGraph pipeline
+          with a hard rule: nothing unverified reaches your screen.
         </p>
       </Reveal>
 

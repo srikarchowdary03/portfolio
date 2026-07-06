@@ -11,6 +11,7 @@ const DOC_TYPE_LABELS: Record<string, string> = {
   profile: "Profile",
   certification: "Certifications",
   system: "System documentation",
+  changelog: "Release history",
 };
 
 interface Props {

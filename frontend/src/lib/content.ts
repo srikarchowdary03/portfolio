@@ -52,3 +52,26 @@ export function getProject(slug: string): ContentDoc | null {
 export function getDoc(relPath: string): ContentDoc {
   return parseFile(path.join(CONTENT_DIR, relPath));
 }
+
+export interface Release {
+  version: string;
+  title: string;
+  body: string;
+}
+
+/** Parse changelog/releases.md "## vX.Y — Title" sections into entries. */
+export function getReleases(): Release[] {
+  const doc = getDoc("changelog/releases.md");
+  const releases: Release[] = [];
+  for (const block of doc.body.split(/^## /m).slice(1)) {
+    const [heading, ...rest] = block.split("\n");
+    const match = heading.match(/^(v[\w.-]+)\s+—\s+(.*)$/);
+    if (!match) continue;
+    releases.push({
+      version: match[1],
+      title: match[2].trim(),
+      body: rest.join("\n").trim(),
+    });
+  }
+  return releases;
+}
