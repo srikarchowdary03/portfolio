@@ -27,6 +27,12 @@ class Settings(BaseSettings):
     chat_model: str = "gpt-4o-mini"
     # Local writable state (SQLite chat log). Gitignored; Docker uses /app/data.
     data_dir: str = "data"
+
+    # --- Rate limits (per client IP; slowapi format "N/period[;N/period]") ---
+    # Chat is the only money-spending endpoint -> strictest.
+    rate_limit_chat: str = "10/minute;60/day"
+    rate_limit_search: str = "30/minute"
+    rate_limit_feedback: str = "20/minute"
     # Path to the knowledge base. Local default assumes the repo layout
     # (backend/ next to content/); Docker sets CONTENT_DIR=/app/content.
     content_dir: str = "../content"

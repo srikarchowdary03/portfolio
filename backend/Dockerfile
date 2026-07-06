@@ -29,4 +29,9 @@ ENV PATH="/app/.venv/bin:$PATH" \
     DATA_DIR=/app/data
 
 EXPOSE 8000
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s \
+  CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/healthz', timeout=4)"
+# Single worker BY DESIGN: session memory and the embedded vector index are
+# in-process. Scaling out requires Redis sessions + a served vector DB
+# (documented migration triggers in docs/decisions/adr-002).
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]

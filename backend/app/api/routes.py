@@ -9,11 +9,12 @@ import json
 import time
 from collections.abc import AsyncIterator
 
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, HTTPException, Query, Request, Response
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
+from app.core.ratelimit import chat_limits, feedback_limits, limiter, search_limits
 from app.rag.models import SearchResult
 
 router = APIRouter(prefix="/api")
@@ -69,8 +70,10 @@ def healthz(request: Request) -> HealthResponse:
 
 
 @router.get("/search", response_model=SearchResponse)
+@limiter.limit(search_limits)
 def search(
     request: Request,
+    response: Response,  # slowapi injects X-RateLimit-*/Retry-After headers here
     q: str = Query(min_length=2, max_length=300, description="Natural-language query"),
     k: int = Query(default=6, ge=1, le=20, description="Number of results"),
     tags: str | None = Query(
@@ -99,12 +102,14 @@ def chat_suggestions() -> dict:
 
 
 @router.post("/feedback", status_code=204)
-def feedback(request: Request, body: FeedbackRequest) -> None:
+@limiter.limit(feedback_limits)
+def feedback(request: Request, response: Response, body: FeedbackRequest) -> None:
     """Thumbs up/down on an answer, keyed by the turn_id from the meta event."""
     request.app.state.chatlog.log_feedback(body.turn_id, body.rating, body.comment)
 
 
 @router.post("/chat")
+@limiter.limit(chat_limits)
 async def chat(request: Request, body: ChatRequest) -> StreamingResponse:
     """The AI Recruiter Assistant.
 

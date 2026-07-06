@@ -10,11 +10,14 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 from app.agent.graph import AgentRunner
 from app.agent.llm import build_llm
 from app.api.routes import router
 from app.core.config import get_settings
+from app.core.ratelimit import limiter
 from app.rag.embedder import build_embedder
 from app.rag.ingest import ingest
 from app.rag.retriever import Retriever
@@ -55,6 +58,11 @@ def create_app() -> FastAPI:
         version="0.2.0",
         lifespan=lifespan,
     )
+
+    # Per-IP rate limiting: /api/chat spends OpenAI tokens, so abuse directly
+    # costs money. 429 + Retry-After on breach (app/core/ratelimit.py).
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
     # Browsers block cross-origin requests unless the server opts in. We allow
     # only our own frontend origins — never "*" — so other sites cannot spend

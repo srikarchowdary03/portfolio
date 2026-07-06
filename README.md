@@ -117,7 +117,7 @@ report: [docs/evals/latest.md](docs/evals/latest.md).
 - [x] **Phase 3** — Chat UI: streaming, citation chips, source panel, feedback
 - [x] **Phase 4** — Portfolio site: hero + embedding-field animation, projects, resume, how-it-works
 - [x] **Phase 5** — Evaluation harness: golden dataset, hit-rate/MRR, LLM-judge faithfulness
-- [ ] **Phase 6** — Production: Railway + Vercel deploy, rate limiting, monitoring
+- [x] **Phase 6** — Production readiness: rate limiting, Railway/Vercel config, launch runbook ([docs/deployment.md](docs/deployment.md))
 - [ ] **Phase 7** — Advanced: JD Matcher, retrieval transparency, hybrid search
 
 ## Repository layout

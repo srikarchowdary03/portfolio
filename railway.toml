@@ -1,0 +1,11 @@
+# Railway config-as-code: build the backend image from the repo-root context
+# so /content ships inside it (see backend/Dockerfile).
+[build]
+builder = "dockerfile"
+dockerfilePath = "backend/Dockerfile"
+
+[deploy]
+healthcheckPath = "/api/healthz"
+healthcheckTimeout = 120
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3

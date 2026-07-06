@@ -46,6 +46,46 @@ workflow because it spends OpenAI tokens; it gates KB/prompt changes.
 - `/api/healthz` + a free uptime monitor (UptimeRobot) pinging it.
 - Optional: LangSmith free tier for full agent traces (Phase 7).
 
+## Go-live runbook (one-time, ~30 minutes)
+
+1. **OpenAI** — create a production API key at platform.openai.com. Set a
+   monthly budget cap (e.g. $10) + email alerts FIRST. The cap is the hard
+   backstop behind rate limiting.
+2. **Railway** — New Project → "Deploy from GitHub repo" → select this repo
+   (main branch). `railway.toml` configures the Dockerfile build and
+   healthcheck. Set service variables:
+   `OPENAI_API_KEY`, `EMBEDDINGS_PROVIDER=openai`, `LLM_PROVIDER=openai`,
+   `ENV=production`, `ALLOWED_ORIGINS=https://<your-vercel-domain>` (update
+   again in step 4). Settings → Networking → Generate Domain. Verify
+   `https://<railway-domain>/api/healthz` returns `index_size > 0` and
+   `/docs` renders.
+3. **Vercel** — Add New Project → import this repo. Root Directory:
+   `frontend` (keep "Include source files outside the Root Directory" ON —
+   the build reads `../content`). Environment variable:
+   `NEXT_PUBLIC_API_BASE_URL=https://<railway-domain>`. Deploy; open the
+   site, run a chat question end to end.
+4. **Lock CORS** — set Railway `ALLOWED_ORIGINS` to the final comma-separated
+   list (Vercel domain + custom domain when added); redeploy backend.
+5. **Custom domain** (optional) — add in Vercel → update `ALLOWED_ORIGINS`.
+6. **Uptime** — UptimeRobot free monitor on `/api/healthz`, 5-minute
+   interval.
+7. **Evals in CI** — add `OPENAI_API_KEY` as a GitHub Actions secret; run the
+   `Evals` workflow once from the Actions tab to confirm the gate passes.
+8. **Smoke checklist** — on the live site: "Tell me about this candidate" ·
+   "Show me his NLP projects" (tag filter) · "What's his favorite food?"
+   (refusal) · citation chip opens source panel · 11th rapid chat request in
+   a minute returns a friendly 429.
+
+Rollback: Railway → Deployments → redeploy the previous build. Logs: Railway
+service logs (backend, structured), Vercel deployment logs (frontend build).
+
+## Rate limits (shipped)
+
+Per client IP via slowapi: `/api/chat` 10/min and 60/day, `/api/search`
+30/min, `/api/feedback` 20/min — env-overridable (`RATE_LIMIT_*`).
+`/api/healthz` is unlimited. Limits protect spend; the OpenAI budget cap is
+the backstop.
+
 ## Cost budget
 
 | Item | Monthly |

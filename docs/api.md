@@ -42,8 +42,9 @@ force the client to parse markdown for metadata.
 
 - **Validation:** Pydantic models on every request/response; FastAPI rejects
   malformed input before handler code runs. Message length capped (~2,000 chars).
-- **Rate limiting:** `slowapi`, per-IP, strictest on `/api/chat` (the only
-  endpoint that spends money). 429 with Retry-After on breach.
+- **Rate limiting (shipped):** `slowapi`, per-IP — `/api/chat` 10/min +
+  60/day, `/api/search` 30/min, `/api/feedback` 20/min; healthz unlimited.
+  429 with Retry-After on breach; limits env-overridable via `RATE_LIMIT_*`.
 - **CORS:** allowlist of our origins only; `GET, POST` only.
 - **Errors:** structured `{error: {code, message}}`; the SSE stream emits a
   terminal `error` event so the UI never hangs on a dead connection.
