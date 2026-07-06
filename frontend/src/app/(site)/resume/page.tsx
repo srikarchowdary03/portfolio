@@ -26,7 +26,7 @@ export default function ResumePage() {
             href="/resume.pdf"
             download
             data-testid="resume-download"
-            className="rounded-md bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-[#d4d4d4]"
+            className="btn-primary px-5 py-2.5"
           >
             Download PDF
           </a>

@@ -67,9 +67,9 @@ export default function HowItWorksPage() {
           {PIPELINE.map((step, i) => (
             <div
               key={step.name}
-              className={`p-5 ${i > 0 ? "border-t border-border-soft sm:border-l sm:border-t-0" : ""}`}
+              className={`bg-surface p-5 ${i > 0 ? "border-t border-border-soft sm:border-l sm:border-t-0" : ""}`}
             >
-              <p className="microlabel">{String(i + 1).padStart(2, "0")}</p>
+              <p className="microlabel !text-accent">{String(i + 1).padStart(2, "0")}</p>
               <h3 className="mt-2 text-sm font-semibold">{step.name}</h3>
               <p className="mt-1.5 text-xs leading-relaxed text-muted">
                 {step.detail}
@@ -98,7 +98,7 @@ export default function HowItWorksPage() {
           {STACK.map((item, i) => (
             <div
               key={item.name}
-              className={`p-5 ${i > 0 ? "border-t border-border-soft" : ""} ${
+              className={`bg-surface p-5 ${i > 0 ? "border-t border-border-soft" : ""} ${
                 i % 3 !== 0 ? "sm:border-l" : ""
               } ${i >= 3 ? "sm:border-t" : "sm:border-t-0"} ${i === 0 ? "border-t-0" : ""}`}
             >
@@ -134,7 +134,7 @@ export default function HowItWorksPage() {
       <Reveal className="mt-12">
         <Link
           href="/chat?q=How does the AI behind this portfolio work?"
-          className="inline-block rounded-md bg-foreground px-6 py-3 text-sm font-medium text-background transition-colors hover:bg-[#d4d4d4]"
+          className="btn-primary inline-block px-6 py-3"
         >
           Or just ask the AI itself
         </Link>

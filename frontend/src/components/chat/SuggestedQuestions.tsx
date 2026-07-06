@@ -24,17 +24,17 @@ export function SuggestedQuestions({ onPick }: { onPick: (q: string) => void }) 
   }, []);
 
   return (
-    <div className="border border-border-soft">
+    <div className="border border-border-soft bg-surface">
       {questions.map((question, i) => (
         <button
           key={question}
           type="button"
           onClick={() => onPick(question)}
-          className={`group flex w-full cursor-pointer items-baseline gap-3 px-4 py-3.5 text-left text-sm text-foreground/85 transition-colors hover:bg-surface ${
+          className={`group flex w-full cursor-pointer items-baseline gap-3 px-4 py-3.5 text-left text-sm text-foreground/85 transition-colors hover:bg-surface-2 ${
             i > 0 ? "border-t border-border-soft" : ""
           }`}
         >
-          <span className="microlabel">{String(i + 1).padStart(2, "0")}</span>
+          <span className="microlabel !text-accent">{String(i + 1).padStart(2, "0")}</span>
           <span className="flex-1">{question}</span>
           <span className="text-muted transition-colors group-hover:text-accent">→</span>
         </button>

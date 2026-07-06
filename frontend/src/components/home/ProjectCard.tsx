@@ -26,7 +26,7 @@ export function ProjectCard({
       className="group grid grid-cols-[auto_1fr_auto] items-baseline gap-x-5 gap-y-1 border-t border-border-soft py-5 transition-colors last:border-b hover:bg-surface sm:grid-cols-[3rem_1fr_auto_2rem]"
     >
       {index !== undefined && (
-        <span className="microlabel pt-0.5">
+        <span className="microlabel pt-0.5 !text-accent">
           {String(index + 1).padStart(2, "0")}
         </span>
       )}

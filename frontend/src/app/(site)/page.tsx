@@ -87,10 +87,7 @@ export default function Home() {
             </p>
           </Reveal>
           <Reveal delay={0.18} className="mt-8 flex flex-wrap items-center gap-3">
-            <Link
-              href="/chat"
-              className="rounded-md bg-foreground px-6 py-3 text-sm font-medium text-background transition-colors hover:bg-[#d4d4d4]"
-            >
+            <Link href="/chat" className="btn-primary px-6 py-3">
               Ask my AI assistant
             </Link>
             <Link
@@ -106,8 +103,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats — ruled data row */}
-      <section className="border-b border-border-soft">
+      {/* Stats — ruled data row (surface tier) */}
+      <section className="border-b border-border-soft bg-surface">
         <div className="mx-auto grid max-w-6xl grid-cols-2 sm:grid-cols-5">
           {STATS.map((stat, i) => (
             <div
@@ -117,7 +114,7 @@ export default function Home() {
               }`}
             >
               <Reveal delay={i * 0.05}>
-                <p className="font-mono text-2xl font-medium tracking-tight">
+                <p className="font-mono text-2xl font-medium tracking-tight text-accent">
                   {stat.value}
                 </p>
                 <p className="microlabel mt-1.5">{stat.label}</p>
@@ -130,7 +127,9 @@ export default function Home() {
       {/* Featured work — index rows */}
       <section className="mx-auto max-w-6xl px-5 py-20">
         <Reveal className="mb-8 flex items-baseline justify-between">
-          <h2 className="microlabel">01 — Selected work</h2>
+          <h2 className="microlabel">
+            <span className="text-accent">01</span> — Selected work
+          </h2>
           <Link
             href="/projects"
             className="microlabel transition-colors hover:!text-accent"
@@ -150,8 +149,10 @@ export default function Home() {
       {/* Meta panel */}
       <section className="mx-auto max-w-6xl px-5 pb-20">
         <Reveal>
-          <div className="border border-border-soft p-8 sm:p-10">
-            <p className="microlabel">02 — About this site</p>
+          <div className="border border-border-soft bg-surface p-8 sm:p-10">
+            <p className="microlabel">
+              <span className="text-accent">02</span> — About this site
+            </p>
             <h2 className="display mt-4 max-w-xl text-2xl font-semibold">
               This portfolio is itself an AI system I built end to end.
             </h2>
@@ -174,7 +175,9 @@ export default function Home() {
       <section className="border-t border-border-soft">
         <div className="mx-auto max-w-6xl px-5 py-20">
           <Reveal>
-            <h2 className="microlabel mb-8">03 — Skills</h2>
+            <h2 className="microlabel mb-8">
+              <span className="text-accent">03</span> — Skills
+            </h2>
           </Reveal>
           <div>
             {SKILL_GROUPS.map((group, i) => (
@@ -192,7 +195,9 @@ export default function Home() {
       {/* Experience & education */}
       <section className="mx-auto max-w-6xl px-5 py-20">
         <Reveal>
-          <h2 className="microlabel mb-8">04 — Experience &amp; education</h2>
+          <h2 className="microlabel mb-8">
+            <span className="text-accent">04</span> — Experience &amp; education
+          </h2>
         </Reveal>
         <div>
           {TIMELINE.map((item, i) => (
@@ -215,7 +220,9 @@ export default function Home() {
       <section className="border-t border-border-soft">
         <div className="mx-auto max-w-6xl px-5 py-20">
           <Reveal>
-            <p className="microlabel">05 — Contact</p>
+            <p className="microlabel">
+              <span className="text-accent">05</span> — Contact
+            </p>
             <h2 className="display mt-4 max-w-2xl text-3xl font-semibold">
               Hiring for GenAI / LLM engineering?
             </h2>
@@ -224,10 +231,7 @@ export default function Home() {
               Ask my assistant the hard questions first, then let&apos;s talk.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <a
-                href="mailto:S.Pattipati002@umb.edu"
-                className="rounded-md bg-foreground px-6 py-3 text-sm font-medium text-background transition-colors hover:bg-[#d4d4d4]"
-              >
+              <a href="mailto:S.Pattipati002@umb.edu" className="btn-primary px-6 py-3">
                 Email me
               </a>
               <Link

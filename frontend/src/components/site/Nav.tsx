@@ -28,7 +28,7 @@ export function Nav() {
           ))}
           <Link
             href="/chat"
-            className="microlabel ml-2 rounded-md bg-foreground px-3.5 py-2 !text-background transition-colors hover:bg-[#d4d4d4]"
+            className="btn-primary microlabel ml-2 px-4 py-2.5 !text-[#0c0a06]"
           >
             Ask my AI
           </Link>

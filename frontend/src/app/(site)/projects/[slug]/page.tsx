@@ -55,7 +55,7 @@ export default async function ProjectPage({
         <Markdown>{project.body}</Markdown>
       </div>
 
-      <div className="mt-14 border border-border-soft p-7">
+      <div className="mt-14 border border-border-soft bg-surface p-7">
         <p className="microlabel">Interactive version</p>
         <p className="mt-2 text-sm text-muted">
           My AI assistant can answer follow-up questions about this project —
@@ -64,7 +64,7 @@ export default async function ProjectPage({
         <Link
           href={`/chat?q=${encodeURIComponent(`Tell me about the project "${project.title}" in detail.`)}`}
           data-testid="ask-ai-about-project"
-          className="mt-4 inline-block rounded-md bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-[#d4d4d4]"
+          className="btn-primary mt-4 inline-block px-5 py-2.5"
         >
           Ask my AI about this project
         </Link>

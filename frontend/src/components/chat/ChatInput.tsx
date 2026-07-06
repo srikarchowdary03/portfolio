@@ -38,7 +38,7 @@ export function ChatInput({ onSend, disabled, prefill }: Props) {
         type="button"
         onClick={submit}
         disabled={disabled || !value.trim()}
-        className="cursor-pointer rounded-md bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-[#d4d4d4] disabled:cursor-not-allowed disabled:opacity-30"
+        className="btn-primary cursor-pointer px-5 py-2.5"
       >
         Send
       </button>
